@@ -2,3 +2,5 @@
 /ps.txt
 /rets_openhouse.sql
 /rets_property.sql
+/backend/.env
+/backend/node_modules
