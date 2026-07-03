@@ -24,8 +24,14 @@ router.get('/', async (req, res) => {
             if (value !== undefined && (isNaN(Number(value)) || Number(value) < 0)) {
                 return res.status(400).json({
                     error : `Invalid ${key}.`
-                })
+                });
             }
+        }
+
+        if (minPrice >= maxPrice) {
+            return res.status(400).json({
+                error : `Max Price must be Greater than Min Price`
+            });
         }
 
         let wheres = [];
