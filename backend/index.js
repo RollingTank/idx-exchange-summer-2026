@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const pool = require('./database');
+const propertiesRouter = require('./properties');
 require('dotenv').config();
 
 const app = express();
@@ -8,6 +9,7 @@ const PORT = process.env.PORT;
 
 app.use(cors());
 app.use(express.json());
+app.use('/api/properties', propertiesRouter);
 
 app.get('/api/health', async (req, res) => {
     try {
