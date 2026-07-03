@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
         limit = limit === undefined ? 20 : parseInt(limit);
         offset = offset === undefined ? 0 : parseInt(offset);
 
-        if (isNaN(limit) || limit <= 0 || limit >= 200) {
+        if (isNaN(limit) || limit <= 0 || limit >= 100) {
             return res.status(400).json({
                 error : 'Invalid Limit.'
             });
