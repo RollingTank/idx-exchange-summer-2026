@@ -2,6 +2,66 @@ const express = require('express');
 const router = express.Router();
 const pool = require('./database');
 
+function validateListingID(req, res, next) {
+    const id = req.params.id;
+
+    const isValid = /^[0-9]+$/.test(id) && id.length <= 30;
+
+    if (!isValid) {
+        return res.status(400).json({
+            error : `Invalid/Malformed Listing ID format`
+        });
+    }
+
+    req.parseListingId = id;
+    next();
+}
+
+router.get('/:id/openhouses', validateListingID, async (req, res, next) => {
+    try {
+        const listingID = req.parseListingId;
+
+        const [propCheck] = await pool.query(
+            'SELECT L_ListingID FROM rets_property WHERE L_ListingID = ?',
+            [listingID]
+        );
+        if (propCheck.length == 0) {
+            return res.status(404).json({
+                error : 'property not found'
+            });
+        }
+        const [openHouses] = await pool.query(
+            'SELECT * FROM rets_openhouse WHERE L_ListingID = ? ORDER BY OH_StartDate ASC, OH_StartTime ASC', 
+            [listingID]
+        );
+
+        res.json(openHouses);
+    } catch(error) {
+        next(error);
+    }
+});
+
+router.get('/:id', validateListingID, async (req, res, next) => {
+    try {
+        const listingID = req.parseListingId;
+
+        const [rows] = await pool.query(
+            'SELECT * FROM rets_property WHERE L_ListingID = ?',
+            [listingID]
+        );
+
+        if (rows.length == 0) {
+            return res.status(404).json({
+                'error' : `Property with ID ${listingID} doesn't exist`
+            });
+        }
+
+        res.json(rows[0]);
+    } catch (error) {
+        next(error);
+    }
+});
+
 router.get('/', async (req, res) => {
     try {
         let {city, zipcode, minPrice, maxPrice, beds, baths, limit, offset} = req.query;
