@@ -5,7 +5,7 @@ const pool = require('./database');
 function validateListingID(req, res, next) {
     const id = req.params.id;
 
-    const isValid = /^[0-9]+$/.test(id) && id.length <= 30;
+    const isValid = /^[0-9]+$/.test(id) && id.length <= 15;
 
     if (!isValid) {
         return res.status(400).json({
@@ -27,7 +27,7 @@ router.get('/:id/openhouses', validateListingID, async (req, res, next) => {
         );
         if (propCheck.length == 0) {
             return res.status(404).json({
-                error : 'property not found'
+                error : 'property with given ID does not exist'
             });
         }
         const [openHouses] = await pool.query(
