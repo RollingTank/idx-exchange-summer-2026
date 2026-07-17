@@ -8,8 +8,8 @@ export default function PropertyCard({ property }) {
     return (
         <div className='property-card'>
             <div className='card-image-wrapper'>
-                <img src={photo} alt={property.L_Address} onError={(e) => {
-                    e.target.src = '../img/image-broken.png'
+                <img src={photo} alt="No Photos Available" onError={(e) => {
+                    e.target.src = "";
                 }}   />
             </div>
             <div className='card-content'>
