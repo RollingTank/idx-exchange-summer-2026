@@ -35,7 +35,12 @@
     box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
 }
-
+.img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
 .property-card:hover {
   transform: translateY(-6px);
   box-shadow:

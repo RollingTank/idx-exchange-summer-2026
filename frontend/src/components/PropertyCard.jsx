@@ -8,14 +8,14 @@ export default function PropertyCard({ property }) {
     return (
         <div className='property-card'>
             <div className='card-image-wrapper'>
-                <img src={photo} alt="No Photos Available" onError={(e) => {
+                <img className='img' src={photo} alt="No Photos Available" onError={(e) => {
                     e.target.src = "";
                 }}   />
             </div>
             <div className='card-content'>
                 <h3>${Number(property.L_SystemPrice).toLocaleString()}</h3>
                 <p className='address'>{property.L_Address}</p>
-                <p className='location'>{property.L_City}, {property.L_State}</p>
+                <p className='location'>{property.L_City}, {property.L_State} {property.L_Zip}</p>
                 <div className='specs'>
                     <span>{property.L_Keyword2} Beds</span>
                     <span>{property.LM_Dec_3} Baths</span>
