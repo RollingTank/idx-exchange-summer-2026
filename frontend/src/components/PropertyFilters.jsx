@@ -11,37 +11,102 @@ const INITIAL_STATE = {
 };
 
 export default function PropertyFilters({ onSearch, onClear}) {
-  const [filters, setFilters] = useState(INITIAL_STATE);
-  
+const [filters, setFilters] = useState(INITIAL_STATE);
+  const [errors, setErrors] = useState({});
+
   const handleChange = (e) => {
-    const {name, value} = e.target;
-    setFilters(prev => ({ ...prev, [name]: value}));
+    const { name, value } = e.target;
+    setFilters(prev => ({ ...prev, [name]: value }));
+
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: null }));
+    }
   };
-  
+
+  const validate = () => {
+    const newErrors = {};
+
+    if (filters.zipcode && !/^\d{5}$/.test(filters.zipcode)) {
+      newErrors.zipcode = "ZIP code must be exactly 5 digits.";
+    }
+
+    if (filters.minPrice !== '' && filters.maxPrice !== '') {
+      const min = Number(filters.minPrice);
+      const max = Number(filters.maxPrice);
+
+      if (min >= max) {
+        newErrors.price = "Minimum price must be less than maximum price.";
+      }
+    }
+
+    setErrors(newErrors);
+    
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    if (!validate()) {
+      return;
+    }
+
     const activeFilters = Object.keys(filters).reduce((acc, key) => {
-        if (filters[key] !== '') {
-            acc[key] = filters[key];
-        }
-        return acc;
+      if (filters[key] !== '') {
+        acc[key] = filters[key];
+      }
+      return acc;
     }, {});
 
     onSearch(activeFilters);
-  }
+  };
 
   const handleClear = () => {
     setFilters(INITIAL_STATE);
+    setErrors({});
     onClear();
   };
 
   return (
     <form onSubmit={handleSubmit} className="filter-form">
-      <input type="text" name="city" placeholder="City" value={filters.city} onChange={handleChange} />
-      <input type="text" name="zipcode" placeholder="ZIP Code" value={filters.zipcode} onChange={handleChange} />
-      <input type="number" name="minPrice" placeholder="Min Price" value={filters.minPrice} onChange={handleChange} />
-      <input type="number" name="maxPrice" placeholder="Max Price" value={filters.maxPrice} onChange={handleChange} />
+      <div className="field-group">
+        <input 
+          type="text" 
+          name="city" 
+          placeholder="City" 
+          value={filters.city} 
+          onChange={handleChange} 
+        />
+      </div>
+
+      <div className="field-group">
+        <input 
+          type="text" 
+          name="zipcode" 
+          placeholder="ZIP Code" 
+          value={filters.zipcode} 
+          onChange={handleChange} 
+        />
+        {errors.zipcode && <span className="error-message">{errors.zipcode}</span>}
+      </div>
+
+      <div className="field-group">
+        <input 
+          type="number" 
+          name="minPrice" 
+          placeholder="Min Price" 
+          value={filters.minPrice} 
+          onChange={handleChange} 
+        />
+        <input 
+          type="number" 
+          name="maxPrice" 
+          placeholder="Max Price" 
+          value={filters.maxPrice} 
+          onChange={handleChange} 
+        />
+        {errors.price && <span className="error-message">{errors.price}</span>}
+      </div>
       
       <select name="beds" value={filters.beds} onChange={handleChange}>
         <option value="">Beds (Any)</option>
