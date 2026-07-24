@@ -28,7 +28,7 @@ export default function ListingsPage() {
   };
 
   const handleSearch = (activeFilters) => {
-    setLoading(true);
+    setLoading(true)
     setProperties([]);
 
     fetchProperties(activeFilters)
@@ -48,24 +48,39 @@ export default function ListingsPage() {
     loadDefaultProperties();
   }, []);
 
-  if (loading) {
-    return <div className="spinner">Loading active listings. . .</div>;
-  }
-  if (error) {
-    return <div className="error-banner">Error: {error}</div>;
+
+  if (totalCount === 0) {
+    return (<div className="listings-container">
+      <PropertyFilters onSearch={handleSearch} onClear={handleClear} />
+      <h2>
+        No Properties Found.
+      </h2></div>);
   }
 
   return (
     <div className="listings-container">
       <PropertyFilters onSearch={handleSearch} onClear={handleClear} />
-      <h2>
-        Showing {properties.length} of {totalCount} properties
-      </h2>
-      <div className="property-grid">
-        {properties.map((prop) => (
-          <PropertyCard key={prop.L_ListingID} property={prop} />
-        ))}
-      </div>
+
+      {loading && <div className="spinner">Loading active listings. . .</div>}
+
+      {!loading && error && <div className="error-banner">Error: {error}</div>}
+
+      {!loading && !error && totalCount === 0 && (
+        <h2>No Properties Found.</h2>
+      )}
+
+      {!loading && !error && totalCount > 0 && (
+        <>
+          <h2>
+            Showing {properties.length} of {totalCount} properties
+          </h2>
+          <div className="property-grid">
+            {properties.map((prop) => (
+              <PropertyCard key={prop.L_ListingID} property={prop} />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }
