@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { fetchProperties } from "../api/client";
 import PropertyCard from "./PropertyCard";
 import PropertyFilters from "./PropertyFilters";
+import Pagination from "./Pagination";
 import './ListingsPage.css'
 
 export default function ListingsPage() {
@@ -10,43 +11,61 @@ export default function ListingsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const loadDefaultProperties = () => {
-    setLoading(true);
-    setProperties([]);
-    fetchProperties()
-      .then((data) => {
-        setProperties(data.results || []);
-        setTotalCount(data.total || 0);
-        setError(null);
-      })
-      .catch((err) => {
-        setError(err.message || "Backend server is currently unreachable.");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(20);
+  const [activeFilters, setActiveFilters] = useState(null);
 
-  const handleSearch = (activeFilters) => {
-    setLoading(true)
-    setProperties([]);
-
-    fetchProperties(activeFilters)
-      .then((data) => {
-        setProperties(data.results || []);
-        setTotalCount(data.total || 0);
-        setError(null);
-      })
-      .catch((err) => setError(err.message || "Server is unreachable"))
-      .finally(() => setLoading(false));
-  };
-  const handleClear = () => {
-    loadDefaultProperties();
-  };
+  
 
   useEffect(() => {
-    loadDefaultProperties();
-  }, []);
+      let isMounted = true;
+      setLoading(true);
+
+      const params = {
+        ...(activeFilters || {}),
+        offset: (currentPage - 1) * 20,
+        limit: itemsPerPage,
+      };
+
+      fetchProperties(params)
+        .then((data) => {
+          if (!isMounted) return;
+          setProperties(data.results || []);
+          setTotalCount(data.total || 0);
+          setError(null);
+        })
+        .catch((err) => {
+          if (!isMounted) return;
+          setError(err.message || "Backend server is currently unreachable.");
+        })
+        .finally(() => {
+          if (isMounted) setLoading(false);
+        });
+
+      return () => {
+        isMounted = false;
+      };
+    }, [currentPage, activeFilters, itemsPerPage]);
+
+  const handleSearch = (activeFilters) => {
+    setActiveFilters(activeFilters);
+    setCurrentPage(1);
+  };
+  const handleClear = () => {
+    setActiveFilters(null);
+    setCurrentPage(1);
+  };
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  };
+
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
+  const startItem = totalCount === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+  const endItem = Math.min(currentPage * itemsPerPage, totalCount);
 
 
   if (totalCount === 0) {
@@ -72,13 +91,19 @@ export default function ListingsPage() {
       {!loading && !error && totalCount > 0 && (
         <>
           <h2>
-            Showing {properties.length} of {totalCount} properties
+            Showing {startItem}-{endItem} of {totalCount} properties
           </h2>
+
           <div className="property-grid">
             {properties.map((prop) => (
               <PropertyCard key={prop.L_ListingID} property={prop} />
             ))}
           </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
         </>
       )}
     </div>
