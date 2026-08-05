@@ -1,13 +1,17 @@
 // frontend/src/App.js
-import React from 'react';
-import ListingsPage from './components/ListingsPage';
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ListingsPage from "./components/ListingsPage";
+import PropertyDetailPage from "./components/PropertyDetailPage";
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      <ListingsPage />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<ListingsPage />} />
+        <Route path="/property/:id" element={<PropertyDetailPage />} />
+        <Route path="*" element={<ListingsPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
-
-export default App;

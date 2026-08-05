@@ -1,0 +1,53 @@
+.open-houses-container {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  padding: 24px 28px 28px;
+}
+
+.open-houses-list {
+  display: grid;
+  gap: 14px;
+}
+
+.open-house-card {
+  padding: 18px 18px 16px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.open-house-date,
+.open-house-time,
+.open-house-remarks {
+  color: #334155;
+  line-height: 1.55;
+}
+
+.open-house-date + .open-house-time,
+.open-house-time + .open-house-remarks {
+  margin-top: 8px;
+}
+
+.open-house-card strong {
+  color: #0f172a;
+}
+
+.no-open-houses {
+  margin: 0;
+  padding: 24px 28px;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #475569;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .open-houses-container,
+  .no-open-houses {
+    padding: 20px;
+    border-radius: 16px;
+  }
+}
