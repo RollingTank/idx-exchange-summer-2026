@@ -44,36 +44,46 @@ export default function PropertyCard({ property }) {
       tabIndex={0}
     >
       <div className="card-image-wrapper">
-        <img
-          className="img"
-          src={displayPhoto}
-          alt={property.L_Address || "Property photo"}
-          onError={(e) => {
-            e.target.src = ""; 
-          }}
-        />
+        <div className="card-main-photo">
+          <img
+            className="img"
+            src={displayPhoto}
+            alt={property.L_Address || "Property photo"}
+            onError={(e) => {
+              e.target.src = "";
+            }}
+          />
 
-        {photos.length > 1 && (
-          <>
-            <button
-              className="carousel-btn prev"
-              onClick={handlePrev}
-              aria-label="Previous Image"
-            >
-              &#10094;
-            </button>
-            <button
-              className="carousel-btn next"
-              onClick={handleNext}
-              aria-label="Next Image"
-            >
-              &#10095;
-            </button>
-            <div className="carousel-counter">
-              {currentIndex + 1} / {photos.length}
-            </div>
-          </>
-        )}
+          {photos.length > 1 && (
+            <>
+              <button
+                type="button"
+                className="carousel-btn prev"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  handlePrev(event);
+                }}
+                aria-label="Previous Image"
+              >
+                &#10094;
+              </button>
+              <button
+                type="button"
+                className="carousel-btn next"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  handleNext(event);
+                }}
+                aria-label="Next Image"
+              >
+                &#10095;
+              </button>
+              <div className="carousel-counter">
+                {currentIndex + 1} / {photos.length}
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="card-content">

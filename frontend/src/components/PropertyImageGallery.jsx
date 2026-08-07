@@ -7,12 +7,24 @@ export default function PropertyImageGallery({ photosData }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const lightboxRef = useRef(null);
+  const thumbnailRefs = useRef([]);
 
   useEffect(() => {
     if (isLightboxOpen && lightboxRef.current) {
       lightboxRef.current.focus();
     }
   }, [isLightboxOpen]);
+
+  useEffect(() => {
+    const activeThumbnail = thumbnailRefs.current[selectedIndex];
+    if (activeThumbnail) {
+      activeThumbnail.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
+  }, [selectedIndex]);
 
   useEffect(() => {
     if (!isLightboxOpen) return;
@@ -113,6 +125,9 @@ export default function PropertyImageGallery({ photosData }) {
           {photos.map((photo, idx) => (
             <img
               key={idx}
+              ref={(element) => {
+                thumbnailRefs.current[idx] = element;
+              }}
               src={photo}
               alt={`Thumbnail ${idx + 1}`}
               className={`thumbnail ${idx === selectedIndex ? "active" : ""}`}

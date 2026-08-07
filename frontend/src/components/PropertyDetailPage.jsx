@@ -15,6 +15,31 @@ export default function PropertyDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const formatDetailValue = (value) => {
+    if (value === null || value === undefined || value === "") {
+      return "N/A";
+    }
+
+    if (value === true || value === "Y") return "Yes";
+    if (value === false || value === "N") return "No";
+
+    return value;
+  };
+
+  const propertyDetails = [
+    { label: "Lot Size Area", value: property?.L_Keyword1 },
+    { label: "Flooring", value: property?.Flooring },
+    { label: "High School District", value: property?.HighSchoolDistrict },
+    { label: "Association Fee", value: property?.AssociationFee },
+    { label: "Fencing", value: property?.Fencing },
+    { label: "Attached Garage", value: property?.AttachedGarageYN },
+    { label: "Levels", value: property?.L_Keyword7 },
+    { label: "Days On Market", value: property?.DaysOnMarket },
+    { label: "Main Level Bedrooms", value: property?.MainLevelBedrooms },
+    { label: "Property Type", value: property?.L_Class },
+    { label: "Property SubType", value: property?.L_Type_ },
+  ];
+
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
@@ -91,6 +116,20 @@ export default function PropertyDetailPage() {
           <p>{property.L_Remarks}</p>
         </div>
       )}
+
+      <div className="property-section property-details-section">
+        <h3>Property Details</h3>
+        <div className="property-details-grid">
+          {propertyDetails.map((item) => (
+            <div key={item.label} className="property-detail-item">
+              <span className="property-detail-label">{item.label}</span>
+              <span className="property-detail-value">
+                {formatDetailValue(item.value)}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
 
       <OpenHouses openHouses={openHouses} />
 
