@@ -38,6 +38,7 @@ export default function PropertyDetailPage() {
     { label: "Main Level Bedrooms", value: property?.MainLevelBedrooms },
     { label: "Property Type", value: property?.L_Class },
     { label: "Property SubType", value: property?.L_Type_ },
+    { label: "Date Listed", value: (String(property?.ListingContractDate)).match(/\d\d\d\d-\d\d-\d\d/) },
   ];
 
   useEffect(() => {

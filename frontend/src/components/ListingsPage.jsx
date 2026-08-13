@@ -15,6 +15,11 @@ const INITIAL_FILTERS = {
   baths: "",
 };
 
+const INITIAL_SORT = {
+  sortBy: "",
+  sortOrder: "asc",
+};
+
 const parseSearchState = (search) => {
   const params = new URLSearchParams(search);
 
@@ -27,11 +32,15 @@ const parseSearchState = (search) => {
       beds: params.get("beds") || "",
       baths: params.get("baths") || "",
     },
+    sort: {
+      sortBy: params.get("sortBy") || "",
+      sortOrder: params.get("sortOrder") || "asc",
+    },
     page: Math.max(parseInt(params.get("page") || "1", 10) || 1, 1),
   };
 };
 
-const buildSearchString = (filters, page) => {
+const buildSearchString = (filters, page, sort = INITIAL_SORT) => {
   const params = new URLSearchParams();
 
   Object.entries(filters).forEach(([key, value]) => {
@@ -44,10 +53,15 @@ const buildSearchString = (filters, page) => {
     params.set("page", String(page));
   }
 
+  if (sort.sortBy) {
+    params.set("sortBy", sort.sortBy);
+    params.set("sortOrder", sort.sortOrder || "asc");
+  }
+
   return params.toString();
 };
 
-const buildApiParams = (filters, currentPage, itemsPerPage) => {
+const buildApiParams = (filters, sort, currentPage, itemsPerPage) => {
   const params = {};
 
   Object.entries(filters || {}).forEach(([key, value]) => {
@@ -55,6 +69,11 @@ const buildApiParams = (filters, currentPage, itemsPerPage) => {
       params[key] = value;
     }
   });
+
+  if (sort?.sortBy) {
+    params.sortBy = sort.sortBy;
+    params.sortOrder = sort.sortOrder || "asc";
+  }
 
   params.offset = (currentPage - 1) * itemsPerPage;
   params.limit = itemsPerPage;
@@ -78,6 +97,10 @@ export default function ListingsPage() {
     ...INITIAL_FILTERS,
     ...initialSearchState.filters,
   });
+  const [activeSort, setActiveSort] = useState({
+    ...INITIAL_SORT,
+    ...initialSearchState.sort,
+  });
 
   useEffect(() => {
     const nextSearchState = parseSearchState(location.search);
@@ -86,13 +109,22 @@ export default function ListingsPage() {
       ...INITIAL_FILTERS,
       ...nextSearchState.filters,
     });
+    setActiveSort({
+      ...INITIAL_SORT,
+      ...nextSearchState.sort,
+    });
   }, [location.search]);
 
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
 
-    const params = buildApiParams(activeFilters, currentPage, itemsPerPage);
+    const params = buildApiParams(
+      activeFilters,
+      activeSort,
+      currentPage,
+      itemsPerPage,
+    );
 
     fetchProperties(params)
       .then((data) => {
@@ -112,7 +144,7 @@ export default function ListingsPage() {
     return () => {
       isMounted = false;
     };
-  }, [currentPage, activeFilters, itemsPerPage]);
+  }, [currentPage, activeFilters, itemsPerPage, activeSort]);
 
   const handleSearch = (activeFilters) => {
     const searchString = buildSearchString(activeFilters, 1);
@@ -124,8 +156,26 @@ export default function ListingsPage() {
   const handleClear = () => {
     navigate("/");
   };
+  const handleSortChange = (field, value) => {
+    const nextSort = {
+      ...activeSort,
+      [field]: value,
+    };
+
+    if (field === "sortBy" && !value) {
+      nextSort.sortOrder = "asc";
+    }
+
+    setActiveSort(nextSort);
+
+    const searchString = buildSearchString(activeFilters, 1, nextSort);
+    navigate({
+      pathname: "/",
+      search: searchString ? `?${searchString}` : "",
+    });
+  };
   const handlePageChange = (page) => {
-    const searchString = buildSearchString(activeFilters, page);
+    const searchString = buildSearchString(activeFilters, page, activeSort);
     navigate({
       pathname: "/",
       search: searchString ? `?${searchString}` : "",
@@ -160,6 +210,36 @@ export default function ListingsPage() {
         onClear={handleClear}
         initialFilters={activeFilters}
       />
+
+      <div className="sort-controls" aria-label="Sort properties">
+        <div className="field-group">
+          <label htmlFor="sortBy">Sort By</label>
+          <select
+            id="sortBy"
+            value={activeSort.sortBy}
+            onChange={(e) => handleSortChange("sortBy", e.target.value)}
+          >
+            <option value="">Default</option>
+            <option value="L_SystemPrice">Price</option>
+            <option value="ListingContractDate">Date Listed</option>
+            <option value="LM_Int2_3">Square Footage</option>
+            <option value="L_Keyword2">Beds</option>
+          </select>
+        </div>
+
+        <div className="field-group">
+          <label htmlFor="sortOrder">Sort Order</label>
+          <select
+            id="sortOrder"
+            value={activeSort.sortOrder}
+            onChange={(e) => handleSortChange("sortOrder", e.target.value)}
+            disabled={!activeSort.sortBy}
+          >
+            <option value="asc">Low to High</option>
+            <option value="desc">High to Low</option>
+          </select>
+        </div>
+      </div>
 
       {loading && <div className="spinner">Loading active listings. . .</div>}
 
