@@ -147,13 +147,13 @@ router.get("/", async (req, res) => {
     let wheres = [];
     let queries = [];
 
-    if (city) {
-      wheres.push("LOWER(TRIM(L_City)) = Lower(TRIM(?))");
-      queries.push(city);
+    if (city) {     
+      wheres.push("L_City = ?");
+      queries.push(String(city).trim().toLowerCase());
     }
     if (zipcode) {
       wheres.push("L_Zip = ?");
-      queries.push(zipcode);
+      queries.push(`"${String(zipcode)}"`);
     }
     if (minPrice) {
       wheres.push("L_SystemPrice >= ?");
