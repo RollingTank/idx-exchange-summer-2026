@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { getFirstPhoto } from "../utils/photoHelper";
 import "./PropertyCard.css";
@@ -108,3 +109,30 @@ export default function PropertyCard({ property }) {
     </div>
   );
 }
+
+PropertyCard.propTypes = {
+  property: PropTypes.shape({
+    L_ListingID: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+      .isRequired,
+    L_Photos: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.arrayOf(PropTypes.string),
+    ]),
+    L_Address: PropTypes.string,
+    UnparsedAddress: PropTypes.string,
+    L_City: PropTypes.string,
+    L_State: PropTypes.string,
+    L_Zip: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    L_SystemPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    ListPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    L_Keyword2: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    BedsTotal: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    LM_Dec_3: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    BathsTotal: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    LM_Int2_3: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    BuildingAreaTotal: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
+  }).isRequired,
+};
