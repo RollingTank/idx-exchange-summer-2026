@@ -16,9 +16,7 @@ app.use((req, res, next) => {
 
     const durationInMs = (diff[0] * 1000 + diff[1] * 0.000001).toFixed(2);
 
-    console.log(
-      `[${new Date().toISOString()}] ${req.method} ${req.originalUrl} - Status: ${res.statusCode} (${durationInMs} ms)`,
-    );
+    
   });
 
   next();
@@ -35,7 +33,7 @@ app.get("/api/health", async (req, res) => {
       database: "connected",
     });
   } catch (error) {
-    console.error("Health check failed.");
+
 
     return res.status(500).json({
       status: "error",
@@ -45,11 +43,10 @@ app.get("/api/health", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on PORT ${PORT}`);
+  
 });
 
 app.use((err, req, res, next) => {
-  console.error(`Caught Server Error: ${err}`);
   res.status(500).json({
     error: "internal server error",
   });

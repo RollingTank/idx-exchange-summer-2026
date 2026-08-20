@@ -200,7 +200,6 @@ router.get("/", async (req, res) => {
       results,
     });
   } catch (error) {
-    console.error("Error fecthing properties: ", error);
     return res.status(500).json({
       error: `Error: ${error}`,
     });
