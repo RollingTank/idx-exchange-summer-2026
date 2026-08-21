@@ -10,7 +10,7 @@ export function getFirstPhoto(photosRaw) {
             return parsed[0];
         }
     } catch (e) {
-        console.log("Failed to parse image: ", e);
+        
     }
     return fallback;
 }
