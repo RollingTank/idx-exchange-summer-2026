@@ -23,7 +23,7 @@ describe('PropertyFilters Component', () => {
 
     render(<PropertyFilters onSearch={handleSearchMock} onClear={jest.fn()} />);
 
-    // Type into City and select 2+ Beds, leaving other fields empty
+    
     await userEvent.type(screen.getByPlaceholderText('City'), 'Beverly Hills');
     await userEvent.selectOptions(screen.getAllByRole('combobox')[0], '2');
 
@@ -46,10 +46,10 @@ describe('PropertyFilters Component', () => {
     await userEvent.type(cityInput, 'Alameda');
     expect(cityInput).toHaveValue('Alameda');
 
-    // Click Clear Filters
+    
     await userEvent.click(screen.getByRole('button', { name: /clear filters/i }));
 
-    // Input should be empty and onClear called
+    
     expect(cityInput).toHaveValue('');
     expect(handleClearMock).toHaveBeenCalledTimes(1);
   });
