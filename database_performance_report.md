@@ -26,7 +26,7 @@
 
      ![alt text](./misc/image_1.png)
      - In this alternate query, by not using ```LOWER()``` and ```TRIM()```, the database is able to use the existing city_price key and scan only 208 rows, which are about 0.39% of the entries. 
-     - Scan Ratio: 3.25, a ~98% decrease compared to the previous query.
+     - Scan Ratio: 3.25, a ~98% decrease compared to the previously run query.
 2) A lack of composite indices that filter by zip_code as well as duplicate indices that clutter the database
     - The database lacks composite indices on zipcode, including just one non-composite index.
     - Furthermore, the database has a lot of redundant indices that can be removed.
