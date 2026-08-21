@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchPropertyDetail, fetchPropertyOpenHouses } from "../api/client";
-import PropertyImageGallery from "./PropertyImageGallery";
-import PropertyMap from "./PropertyMap";
-import OpenHouses from "./OpenHouses";
+import PropertyImageGallery from "../components/PropertyImageGallery";
+import PropertyMap from "../components/PropertyMap";
+import OpenHouses from "../components/OpenHouses";
 import "./PropertyDetailPage.css";
 
 export default function PropertyDetailPage() {
@@ -38,7 +38,10 @@ export default function PropertyDetailPage() {
     { label: "Main Level Bedrooms", value: property?.MainLevelBedrooms },
     { label: "Property Type", value: property?.L_Class },
     { label: "Property SubType", value: property?.L_Type_ },
-    { label: "Date Listed", value: (String(property?.ListingContractDate)).match(/\d\d\d\d-\d\d-\d\d/) },
+    {
+      label: "Date Listed",
+      value: String(property?.ListingContractDate).match(/\d\d\d\d-\d\d-\d\d/),
+    },
   ];
 
   useEffect(() => {
