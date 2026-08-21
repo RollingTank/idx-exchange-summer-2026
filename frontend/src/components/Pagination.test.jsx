@@ -19,7 +19,7 @@ describe("Pagination Component Logic & Rendering", () => {
     <Pagination currentPage={1} totalPages={1} onPageChange={jest.fn()} />
   );
   
-  // Checks that the pagination <nav> element is not rendered
+  
   expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
 });
 
@@ -45,29 +45,29 @@ describe("Pagination Component Logic & Rendering", () => {
       />
     );
 
-    // Click Next
+    
     fireEvent.click(screen.getByText("Next"));
     expect(onPageChangeMock).toHaveBeenCalledWith(4);
 
-    // Click Previous
+    
     fireEvent.click(screen.getByText("Previous"));
     expect(onPageChangeMock).toHaveBeenCalledWith(2);
 
-    // Click Specific Page Number
+    
     fireEvent.click(screen.getByText("5"));
     expect(onPageChangeMock).toHaveBeenCalledWith(5);
   });
 
-  // 🐛 DEBUG CHALLENGE REPRODUCTION & FIX VERIFICATION
+  
   describe("Debug Challenge: Ellipsis and Page Range Generation", () => {
     test("does not duplicate the last page number when near the end", () => {
-      // Near end: page 22 out of 24 pages
+     
       const result = generatePageNumbers(22, 24);
       
-      // Should NOT result in [1, '...', 20, 21, 22, 23, 1]
+      
       expect(result).toEqual([1, "...", 20, 21, 22, 23, 24]);
       
-      // Ensure total count of appearance of 1 is exactly 1
+      
       const countOfOne = result.filter((p) => p === 1).length;
       expect(countOfOne).toBe(1);
     });

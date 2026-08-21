@@ -1,5 +1,5 @@
 import React from "react";
-// import "./PropertyMap.css";
+
 
 export default function PropertyMap({ lat, lng, address }) {
   if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
